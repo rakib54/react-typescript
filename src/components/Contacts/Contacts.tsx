@@ -1,35 +1,73 @@
 import React, { useState } from 'react';
 import Contact from './Contact';
 
+interface IContact {
+    name: string;
+    thoughts: string;
+}
 const Contacts = () => {
-
-    const [contact, setContact] = useState("")
-    const [contactList, setContactList] = useState<string[]>([])
-
+    const [contact, setContact] = useState<IContact>({
+        name: "",
+        thoughts: ""
+    });
+    const [contactList, setContactList] = useState<IContact[]>([])
 
     const handleClick = () => {
         setContactList([...contactList, contact])
-        setContact("")
+        setContact({
+            name: "",
+            thoughts: ""
+        })
     }
+
+    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setContact({ ...contact, [e.target.name]: e.target.value })
+    }
+
+    const handleRemove = (thoughts: string) => {
+        const newContactList = contactList.filter(c => c.thoughts !== thoughts)
+        setContactList(newContactList)
+    }
+
+
     return (
         <div>
-            <h1>Contact List</h1>
+            <h1 className="text-center">Your TODO</h1>
+
             <div className="form">
-                <input
-                    type="text"
-                    value={contact}
-                    onChange={(e) => setContact(e.target.value)}
-                    placeholder="Contact Name"
-                />
-                <button onClick={handleClick}>Add contact</button>
+                <div className="mb-3 col-md-6 mx-auto">
+                    <label htmlFor="name">Full Name </label>
+                    <input
+                        className="form-control"
+                        value={contact.name}
+                        onChange={handleOnChange}
+                        name="name"
+                        placeholder="Your Name"
+                        type="text"
+                    />
+                </div>
+                <div className="mb-3 col-md-6 mx-auto">
+                    <label htmlFor="">Your Thoughts</label>
+                    <input
+                        className="form-control"
+                        value={contact.thoughts}
+                        onChange={handleOnChange}
+                        name="thoughts"
+                        placeholder="Your Thoughts"
+                        type="text"
+                    />
+                </div>
             </div>
+            <div className="mb-3 col-md-6 mx-auto">
+                <button className="btn btn-success" onClick={handleClick}>Add</button>
+            </div>
+
+
             {
-                contactList.map((contact) => <Contact name={contact} key={contact}  />)
+                contactList.map((con) => <Contact key={con.name} name={con.name} thoughts={con.thoughts} handleRemove={handleRemove} />)
             }
-            {/* <Contact name="Rakibur Rahman" email="rakibur74@gmail.com" />
-            <Contact name="Rakibur Rahman" email="rakibur74@gmail.com" />
-            <Contact name="Rakibur Rahman" email="rakibur74@gmail.com" />
-            <Contact name="Rakibur Rahman" email="rakibur74@gmail.com" /> */}
+
+
         </div>
     );
 };
